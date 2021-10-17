@@ -1,4 +1,4 @@
 (executable
  (public_name Final)
  (name main)
- (libraries Final))
+ (libraries Final graphics))

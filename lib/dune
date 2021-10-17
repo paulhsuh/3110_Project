@@ -1,2 +1,3 @@
 (library
- (name Final))
+ (name Final)
+ (libraries graphics))
