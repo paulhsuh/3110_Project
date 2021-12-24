@@ -308,8 +308,8 @@
                 "buttons": [
                     {
                         "name": "upgrade_button",
-                        "image_name": "",
-                        "dimmed_image_name": "",
+                        "image_name": "game_screen/buttons/property_action_buttons/upgrade.png",
+                        "dimmed_image_name": "game_screen/buttons/property_action_buttons/dim_upgrade.png",
                         "x_coord": 695,
                         "y_coord": 390,
                         "width": 110,
@@ -317,8 +317,8 @@
                     },
                     {
                         "name": "degrade_button",
-                        "image_name": "",
-                        "dimmed_image_name": "",
+                        "image_name": "game_screen/buttons/property_action_buttons/degrade.png",
+                        "dimmed_image_name": "game_screen/buttons/property_action_buttons/dim_degrade.png",
                         "x_coord": 695,
                         "y_coord": 330,
                         "width": 110,
@@ -326,7 +326,7 @@
                     },
                     {
                         "name": "cancel_button",
-                        "image_name": "",
+                        "image_name": "game_screen/buttons/property_action_buttons/cancel.png",
                         "dimmed_image_name": "",
                         "x_coord": 695,
                         "y_coord": 270,

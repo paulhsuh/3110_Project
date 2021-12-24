@@ -22,10 +22,6 @@ let draw_gs_with_time gs time =
   Gui.draw_game_screen gs;
   Unix.sleepf time
 
-let draw_gs_with_team gs =
-  Gui.draw_game_screen gs;
-  Unix.sleepf 2.0
-
 (* let inital_game_screen gs chars = let gs_with_teams_select =
    Game_screen.initialize gs chars |> Game_screen.team_selection_popup
    in match gs_with_teams_select with | EndGame -> failwith "not
