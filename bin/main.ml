@@ -91,6 +91,11 @@ and animate_player gs pl_num board_loc =
           let gs'' = Game_screen.initialize_team_info gs' in
           Gui.draw_game_screen gs'';
           update_game_screen gs''
+      | NewGS gs ->
+          let gs' = Game_screen.update_card_info gs pl_num board_loc in
+          let gs'' = Game_screen.initialize_team_info gs' in
+          Gui.draw_game_screen gs'';
+          update_game_screen gs''
       | _ -> failwith "not possible main")
 (* Gui.draw_game_screen new_gs; update_game_screen new_gs *)
 

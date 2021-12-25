@@ -340,9 +340,8 @@ let respond_to_property_roll gs board_loc =
       let new_subscreens =
         SM.add Constants.buy_property_screen new_subscreen gs.subscreens
       in
-      ( { gs with subscreens = new_subscreens },
-        { gs with subscreens = new_subscreens } )
-  | false -> (gs, gs)
+      { gs with subscreens = new_subscreens }
+  | false -> gs
 
 let respond_to_buy_button gs =
   let plyr_id = List.nth gs.active_players gs.curr_player_index in
@@ -531,10 +530,16 @@ let respond_to_roll gs board_loc =
   let weapon = IM.find_opt board_loc gs.weapon_stacks in
   let action_space = IM.find_opt board_loc gs.action_spaces in
   match (food, weapon, action_space) with
-  | None, None, None -> respond_to_property_roll gs board_loc
-  | Some fs, None, None -> respond_to_food_roll gs fs
-  | None, Some ws, None -> respond_to_weapon_roll gs ws
-  | None, None, Some ac -> respond_to_action_space_roll gs ac
+  | None, None, None -> NewGS (respond_to_property_roll gs board_loc)
+  | Some fs, None, None ->
+      let opened, closed = respond_to_food_roll gs fs in
+      ClosingGS (opened, closed)
+  | None, Some ws, None ->
+      let opened, closed = respond_to_weapon_roll gs ws in
+      ClosingGS (opened, closed)
+  | None, None, Some ac ->
+      let opened, closed = respond_to_action_space_roll gs ac in
+      ClosingGS (opened, closed)
   | _, _, _ -> failwith "not possible"
 
 type direction =
@@ -628,16 +633,24 @@ let new_respond_to_dice_click gs =
 
 let update_on_roll gs pl_num board_loc =
   let plyr = IM.find pl_num gs.players in
-  let gs_open, gs_closed = respond_to_roll gs board_loc in
+  (* let gs_open, gs_closed = respond_to_roll gs board_loc in *)
   let info_map =
     match IM.find_opt board_loc gs.properties with
-    | None -> update_info_cards gs_closed 0 plyr
-    | Some _ -> update_info_cards gs_closed board_loc plyr
+    | None -> update_info_cards gs 0 plyr
+    | Some _ -> update_info_cards gs board_loc plyr
   in
-  ClosingGS
-    ( { gs_open with info_cards = info_map; curr_player_roll = true },
-      { gs_closed with info_cards = info_map; curr_player_roll = true }
-    )
+  match respond_to_roll gs board_loc with
+  | NewGS gs' ->
+      NewGS { gs' with info_cards = info_map; curr_player_roll = true }
+  | ClosingGS (opened, closed) ->
+      ClosingGS
+        ( { opened with info_cards = info_map; curr_player_roll = true },
+          { closed with info_cards = info_map; curr_player_roll = true }
+        )
+  | _ -> failwith "not possible"
+(* ClosingGS ( { gs_open with info_cards = info_map; curr_player_roll =
+   true }, { gs_closed with info_cards = info_map; curr_player_roll =
+   true } ) *)
 
 let rec determine_factions gs active_plyrs index accum =
   match active_plyrs with
