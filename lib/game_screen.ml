@@ -710,6 +710,26 @@ let activate_team_selection gs =
   in
   { gs with subscreens = new_subscreens }
 
+let rec get_properties_in_set properties set acc =
+  match properties with
+  | [] -> acc
+  | h :: t ->
+      if Property.set h = set then get_properties_in_set t set (acc + 1)
+      else get_properties_in_set t set acc
+
+let check_property_set gs property =
+  let plyr_id = List.nth gs.active_players gs.curr_player_index in
+  let curr_player = IM.find plyr_id gs.players in
+  let player_properties = Player.properties curr_player in
+  let property_set = Property.set property in
+  let properties_of_set =
+    if property_set = Constants.mail then 2 else 3
+  in
+  let properties_number =
+    get_properties_in_set player_properties property_set 0
+  in
+  if properties_of_set = properties_number then true else false
+
 let respond_to_property_button gs property_num =
   let property =
     IM.fold
@@ -719,12 +739,27 @@ let respond_to_property_button gs property_num =
   in
   match property with
   | None -> failwith "impossible"
-  | Some _ ->
+  | Some p ->
       let property_action_screen =
         SM.find Constants.property_action_screen gs.subscreens
       in
       let activated_property_action =
         Subscreen.activate property_action_screen
+      in
+      let btn_map = Subscreen.buttons activated_property_action in
+      let has_set = check_property_set gs p in
+      let new_btns =
+        print_string (string_of_bool has_set);
+        if has_set then SM.map (fun v -> Button.undim v) btn_map
+        else SM.map (fun v -> Button.dim v) btn_map
+      in
+      let cancel_button =
+        SM.find Constants.property_action_cancel_button btn_map
+      in
+      let activate_cancel = Button.undim cancel_button in
+      let new_buttons =
+        SM.add Constants.property_action_cancel_button activate_cancel
+          new_btns
       in
       let d_image_map = Subscreen.images property_action_screen in
       let info_card_image =
@@ -740,8 +775,11 @@ let respond_to_property_button gs property_num =
         Subscreen.replace_images activated_property_action
           new_d_image_map
       in
+      let new_subscreen' =
+        Subscreen.replace_buttons new_subscreen new_buttons
+      in
       let new_subscreens =
-        SM.add Constants.property_action_screen new_subscreen
+        SM.add Constants.property_action_screen new_subscreen'
           gs.subscreens
       in
       NewGS { gs with subscreens = new_subscreens }

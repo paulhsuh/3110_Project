@@ -46,6 +46,8 @@ let image_name p = p.image_name
 
 let get_control p = p.control
 
+let set p = p.set
+
 let acquire p = { p with status = Owned }
 
 let initial_purchase p = p.cost.initial_purchase

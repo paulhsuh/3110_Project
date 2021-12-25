@@ -21,6 +21,8 @@ val acquire : t -> t
 
 val initial_purchase : t -> int
 
+val set : t -> string
+
 val is_acquirable : t -> bool
 (**[is_acquirable property] is [true] if the [property] has an owner and
    [false] otherwise.*)

@@ -40,6 +40,10 @@ let property_action_dynamic_image = "property_action_display"
 
 let property_action_cancel_button = "cancel_button"
 
+let property_action_upgrade_button = "upgrade_button"
+
+let property_action_degrade_button = "degrade_button"
+
 let property_info_card = "info_card_property"
 
 let weapon_info_card = "info_card_weapon"
@@ -123,3 +127,5 @@ let corner_2 = 10
 let corner_3 = 20
 
 let corner_4 = 30
+
+let mail = "Mail"
